@@ -1,6 +1,6 @@
-# Project Name
+# iDoc App
 
-## Instructions how to start
+## Instructions: how to start
 
 create `.env` file like the example `.env.sample`
 
@@ -10,60 +10,102 @@ start with `npm run start-dev`
 
 ## Description
 
-Describe your project in one/two lines.
+
+iDoc App is an app that will make patients' and health professionals' life easier by helping them keep track of appointments, test results, and much more.
+​
 
 ## Motivation
 
 Just a litle API for educational purposes.
 
-## User Stories
 
+
+## User stories
+
+​
 **404** - As a user I want to see a nice 404 page when I go to a page that doesn’t exist so that I know it was my fault
+​
 
 **500** - As a user I want to see a nice error page when the super team screws it up so that I know that is not my fault
 
-**Homepage** - As a user I want to be able to access the homepage so that I see what the app is about and login and signup
+​
+**Landing page** - As a user I want to be able to access the landing page so that I see what the app is about and login and signup
 
-**Sign up** - As a user I want to sign up on the webpage so that I can see all the events that I could attend
+​
+**Sign up** - As a health professional I want to be able to create an account to use the app and also to be able to create a new patient and its basic profile with contact information.
 
-**Login** - As a user I want to be able to log in on the webpage so that I can get back to my account
+​
+**Login** - As a user I want to be able to log in on the webpage
 
-**Logout** - As a user I want to be able to log out from the webpage so that I can make sure no one will access my account
+​
+**Logout** - As a user I want to be able to log out from the webpage
 
-**Events list** - As a user I want to see all the events available so that I can choose which ones I want to attend
+​
+**Profile** - As a patient user I want to be able to see my profile and edit my contact information. As a health professional I want to be able to see my patient's profile information.
 
-**Events create** - As a user I want to create an event so that I can invite others to attend
+​
+**Daily schedule** - As a health professional user I want to be able to see the appointments I have for the day.
 
-**Events detail** - As a user I want to see the event details and attendee list of one event so that I can decide if I want to attend
+**Calendar** - As a patient I want to be able to see the all past and future appointments, as well as request a new appointment.
 
-**Attend event** - As a user I want to be able to attend to event so that the organizers can count me in
+**Double role** - As a health professional, I want to be able to switch to patient views within the app without having to sign out and back in.
+
+**Clinical history** - As a health professional, I want to be able to edit my patient's clinical histories, adding or editing the patient's patologies. As a patient, I want to be able to see my clinical history.
+
+**Documents** - As a health professional user, I want to be able to upload documents (reports, test results) to the patients clinical history.
+
+​
+**Confidentiality** - As a health professional, I won't be able to access personal information of patients that are not under my care.
 
 ## Backlog
 
-List of other features outside of the MVPs scope
+​
+**Chat** - Patients and health professionals can communicate in the app chat.
 
-User profile: - see my profile - upload my profile picture - see other users profile - list of events created by the user - list events the user is attending
-
-Geo Location: - add geolocation to events when creating - show event in a map in event detail page - show all events in a map in the event list page
-
-Homepage: - …
+**Data analysis** - Health professionals can obtain basic statistical indicators about the patients' conditions.
+​
 
 ## ROUTES:
 
-### Endpoints
 
-| Method | Path         | description     | Body |
-| :----: | ------------ | --------------- | ---- |
-|  GET   | `/protected` | protected route |      |
+### Main
 
+
+| Method | Path | Description | Body | |
+| ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
+| GET |` /` | Landing page | | |
+| GET |` /about` | Information about the app | | |
 ### Auth
 
-| Method | Path      | description    | Body                     |
-| :----: | --------- | -------------- | ------------------------ |
-|  GET   | `/whoami` | who am i       |                          |
-|  POST  | `/signup` | signup a user  | `{ username, password }` |
-|  POST  | `/login`  | login a user   | `{ username, password }` |
-|  GET   | `/logout` | logout session |                          |
+
+| Method | Path | Description | Body | |
+| ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
+| POST | `/signup` | Sign up a health professional with an account | { mail, full name, password, speciality } | |
+| POST | `/login` | Log in the user | { mail, password } | |
+| GET | `/logout` | Logout a user | |
+
+ 
+### Health professionals
+| Method | Path | Description | Body | |
+| ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
+| GET | `/home` | Homepage in professional side of the app | |
+| POST | `/add` | Add new patient to database | `{isProfessional, email, phoneNr, password, name, birthDate, weight, height, conditions, appointments}`
+| GET | `/:id` | Read patient's clinical history | | |
+| POST | `/:id` | Edit patient's clinical history | `{isProfessional, email, password, phoneNr, name, birthDate, weight, height, conditions, appointments}` | |
+| GET | `/daily` | Read daily schedule | | |
+|
+
+### Patients
+| Method | Path | Description | Body | |
+| ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
+| GET | `/home` | Homepage in patient side of the app | |
+| GET | `/profile` | Display personal information 
+| POST | `/profile` | Update contact information | `{email, phoneNr}`| 
+| GET | `/appointments` | Display appointments 
+| POST | `/appointments` | Create new appointments | | 
+|
+
+
 
 ## Models
 
@@ -71,20 +113,57 @@ User model
 
 ```javascript
 {
-	username: String;
-	password: String;
+	email: String,
+	password: String,
+	name: String,
+	specialty: {
+		type: String,
+		enum: [
+			'Cardiologist',
+			'Dermatologist',
+			'Gynecologist',
+			'Pediatrician',
+			'Psychiatrist',
+			...
+		]
+	},
+	isPatient: Boolean,
+	phoneNr: Number,
+	birthDate: {
+		day: Number,
+		month: Number,
+		year: Number
+	}
+	weight: Number,
+	height: Number,
+	conditions: String,
+	documents: [
+		{
+			type: ??
+		}
+	]
+	appointments: [
+		{
+			type: ObjectId,
+		ref: Appointment
+		}
+	],
+	{
+		timestamps: true
+	}
 }
 ```
 
-Event model
 
+Appointment model
 ```javascript
 {
-	owner: ObjectId<User>
-	name: String
-	description: String
-	date: Date
-	location: String
+	date: Object,
+	patient: ObjectId<User>,
+	professional: ObjectId<User>,
+	{
+	timestamps: true
+	}
 }
 ```
 
@@ -96,9 +175,7 @@ Link to Trello
 
 ### Git
 
-The url to your repository and to your deployed project
-
-[Repository Link](http://github.com/)
+[Repository Link](https://github.com/mrnlts/iDoc-backend)
 
 [Deploy Link](http://heroku.com/)
 
