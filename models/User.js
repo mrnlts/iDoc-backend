@@ -4,58 +4,52 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
 	{
-		email: {
+		email: String,
+		password: String,
+		name: String,
+		specialty: {
 			type: String,
-			// required: true,
+			enum: [
+				'Anesthesiologist',
+				'Cardiologist',
+				'Dermatologist',
+				'Family medicine physician',
+				'Geriatrician',
+				'Gynecologist',
+				'Neurologist',
+				'Nurse',
+				'Ocupational therapist',
+				'Oncologist',
+				'Ophthalmologist',
+				'Otolaryngologist',
+				'Pediatrician',
+				'Psychiatrist',
+				'Psychologyst',
+				'Speech therapist',
+				'Surgeon',
+				'Urologist',
+			],
 		},
-		password: {
-			type: String,
-			// required: true,
+		isProfessional: {
+			type: Boolean,
+			required: true,
 		},
-		// name: String,
-		// specialty: {
-		// 	type: String,
-		// 	enum: [
-		// 		'Anesthesiologist',
-		// 		'Cardiologist',
-		// 		'Dermatologist',
-		// 		'Family medicine physician',
-		// 		'Geriatrician',
-		// 		'Gynecologist',
-		// 		'Neurologist',
-		// 		'Nurse',
-		// 		'Ocupational therapist',
-		// 		'Oncologist',
-		// 		'Ophthalmologist',
-		// 		'Otolaryngologist',
-		// 		'Pediatrician',
-		// 		'Psychiatrist',
-		// 		'Psychologyst',
-		// 		'Speech therapist',
-		// 		'Surgeon',
-		// 		'Urologist',
-		// 	],
-		// },
-		// isPatient: {
-		// 	type: Boolean,
-		// 	required: true,
-		// },
-		// phoneNr: Number,
-		// birthDate: {
-		// 	day: Number,
-		// 	month: Number,
-		// 	year: Number,
-		// },
-		// weight: Number,
-		// height: Number,
-		// conditions: String,
-		// documents: [],
-		// appointments: [
-		// 	{
-		// 		type: Schema.Types.ObjectId,
-		// 		ref: 'Appointment',
-		// 	},
-		// ],
+		phoneNr: Number,
+		birthDate: {
+			day: Number,
+			month: Number,
+			year: Number,
+		},
+		weight: Number,
+		height: Number,
+		conditions: String,
+		documents: [],
+		appointments: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Appointment',
+			},
+		],
 	},
 	{
 		timestamps: {

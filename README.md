@@ -127,7 +127,7 @@ User model
 			...
 		]
 	},
-	isPatient: Boolean,
+	isProfessional: Boolean,
 	phoneNr: Number,
 	birthDate: {
 		day: Number,

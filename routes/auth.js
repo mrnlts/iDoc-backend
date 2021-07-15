@@ -19,9 +19,21 @@ router.get('/whoami', (req, res, next) => {
 });
 
 router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
-	const { email, password, name, specialty } = res.locals.auth;
+	const {
+		email,
+		password,
+		name,
+		specialty,
+		isProfessional,
+		phoneNr,
+		birthDate,
+		weight,
+		height,
+		conditions,
+		documents,
+		appointments,
+	} = res.locals.auth;
 	try {
-		// console.log(email, password, name, speciality);
 		const user = await User.findOne({ email });
 		if (user) {
 			return next(createError(422));
@@ -29,8 +41,20 @@ router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => 
 
 		const salt = bcrypt.genSaltSync(bcryptSalt);
 		const hashedPassword = bcrypt.hashSync(password, salt);
-
-		const newUser = await User.create({ email, hashedPassword, name, specialty });
+		const newUser = await User.create({
+			email,
+			password: hashedPassword,
+			name,
+			specialty,
+			isProfessional,
+			phoneNr,
+			birthDate,
+			weight,
+			height,
+			conditions,
+			documents,
+			appointments,
+		});
 		req.session.currentUser = newUser;
 		return res.json(newUser);
 	} catch (error) {
