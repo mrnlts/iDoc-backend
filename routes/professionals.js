@@ -1,9 +1,57 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const createError = require('http-errors');
+const { checkEmailAndPasswordNotEmpty } = require('../middlewares');
 
 const User = require('../models/User');
 
+const bcryptSalt = 10;
+
 const router = express.Router();
+
+router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
+	const {
+		email,
+		password,
+		name,
+		specialty,
+		isProfessional,
+		phoneNr,
+		birthDate,
+		weight,
+		height,
+		conditions,
+		documents,
+		appointments,
+	} = res.locals.auth;
+	try {
+		const user = await User.findOne({ email });
+		if (user) {
+			return next(createError(422));
+		}
+
+		const salt = bcrypt.genSaltSync(bcryptSalt);
+		const hashedPassword = bcrypt.hashSync(password, salt);
+		const newUser = await User.create({
+			email,
+			password: hashedPassword,
+			name,
+			specialty,
+			isProfessional,
+			phoneNr,
+			birthDate,
+			weight,
+			height,
+			conditions,
+			documents,
+			appointments,
+		});
+		req.session.currentUser = newUser;
+		return res.json(newUser);
+	} catch (error) {
+		return next(error);
+	}
+});
 
 router.get('/:id', async (req, res, next) => {
 	const { id } = req.params;

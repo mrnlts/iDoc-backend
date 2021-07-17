@@ -11,26 +11,12 @@ const bcryptSalt = 10;
 const router = express.Router();
 
 router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
-	const {
-		email,
-		password,
-		name,
-		specialty,
-		isProfessional,
-		phoneNr,
-		birthDate,
-		weight,
-		height,
-		conditions,
-		documents,
-		appointments,
-	} = res.locals.auth;
+	const { email, password, name, specialty } = res.locals.auth;
 	try {
 		const user = await User.findOne({ email });
 		if (user) {
 			return next(createError(422));
 		}
-
 		const salt = bcrypt.genSaltSync(bcryptSalt);
 		const hashedPassword = bcrypt.hashSync(password, salt);
 		const newUser = await User.create({
@@ -38,14 +24,7 @@ router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => 
 			password: hashedPassword,
 			name,
 			specialty,
-			isProfessional,
-			phoneNr,
-			birthDate,
-			weight,
-			height,
-			conditions,
-			documents,
-			appointments,
+			isProfessional: true,
 		});
 		req.session.currentUser = newUser;
 		return res.json(newUser);
