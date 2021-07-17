@@ -18,4 +18,18 @@ router.get('/:id', async (req, res, next) => {
 	}
 });
 
+router.post('/:id', async (req, res, next) => {
+	const { id } = req.params;
+	const { name, weight, height, conditions, documents } = req.body;
+	try {
+		const updatedUser = await User.findByIdAndUpdate(id, { name, weight, height, conditions, documents });
+		if (updatedUser) {
+			return res.json(updatedUser);
+		}
+		return next(createError(500));
+	} catch (error) {
+		return next(error);
+	}
+});
+
 module.exports = router;
