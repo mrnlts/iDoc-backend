@@ -9,6 +9,12 @@ const bcryptSalt = 10;
 
 const router = express.Router();
 
+router.get('/home', async (req, res) => {
+	if (req.session.currentUser) {
+		res.status(200).json(req.session.currentUser);
+	}
+});
+
 router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	const {
 		email,

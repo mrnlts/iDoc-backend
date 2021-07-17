@@ -80,8 +80,8 @@ Just a litle API for educational purposes.
 
 | Method | Path | Description | Body | |
 | ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
-| POST | `/signup` | Sign up a health professional | { mail, full name, password, speciality } | |
-| POST | `/login` | Log in the user | { mail, password } | |
+| POST | `/signup` | Sign up a health professional | `{ mail, full name, password, speciality }` | |
+| POST | `/login` | Log in the user | `{ mail, password }` | |
 | POST | `/logout` | Logout a user | |
 
  
