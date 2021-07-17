@@ -128,12 +128,9 @@ User model
 		]
 	},
 	isProfessional: Boolean,
+	isPatient: Boolean,
 	phoneNr: Number,
-	birthDate: {
-		day: Number,
-		month: Number,
-		year: Number
-	}
+	birthDate: Date,
 	weight: Number,
 	height: Number,
 	conditions: String,
@@ -158,7 +155,7 @@ User model
 Appointment model
 ```javascript
 {
-	date: Object,
+	date: Date,
 	patient: ObjectId<User>,
 	professional: ObjectId<User>,
 	{

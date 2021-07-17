@@ -24,7 +24,6 @@ router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => 
 			password: hashedPassword,
 			name,
 			specialty,
-			isProfessional: true,
 		});
 		req.session.currentUser = newUser;
 		return res.json(newUser);

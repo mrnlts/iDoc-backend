@@ -33,16 +33,18 @@ const userSchema = new Schema(
 		isProfessional: {
 			type: Boolean,
 			required: true,
+			default: true,
+		},
+		isPatient: {
+			type: Boolean,
+			required: true,
+			default: false,
 		},
 		phoneNr: Number,
-		birthDate: {
-			day: Number,
-			month: Number,
-			year: Number,
-		},
+		birthDate: Date,
 		weight: Number,
 		height: Number,
-		conditions: String,
+		conditions: [String],
 		documents: [],
 		appointments: [
 			{

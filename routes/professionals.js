@@ -16,23 +16,27 @@ router.get('/home', async (req, res) => {
 });
 
 router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
-	const {
-		email,
-		password,
-		name,
-		specialty,
-		isProfessional,
-		phoneNr,
-		birthDate,
-		weight,
-		height,
-		conditions,
-		documents,
-		appointments,
-	} = res.locals.auth;
+	const { email, password, name, phoneNr, birthDate, weight, height, conditions, documents, appointments } =
+		res.locals.auth;
 	try {
 		const user = await User.findOne({ email });
 		if (user) {
+			if (!user.isPatient) {
+				const updatedUser = await User.findOneAndUpdate(
+					{ email },
+					{
+						isPatient: true,
+						phoneNr,
+						birthDate,
+						weight,
+						height,
+						conditions,
+						documents,
+						appointments,
+					}
+				);
+				return res.json(updatedUser);
+			}
 			return next(createError(422));
 		}
 
@@ -42,8 +46,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 			email,
 			password: hashedPassword,
 			name,
-			specialty,
-			isProfessional,
+			isPatient: true,
 			phoneNr,
 			birthDate,
 			weight,
@@ -59,7 +62,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	}
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/patients/:id', async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
@@ -72,7 +75,7 @@ router.get('/:id', async (req, res, next) => {
 	}
 });
 
-router.post('/:id', async (req, res, next) => {
+router.put('/patients/:id', async (req, res, next) => {
 	const { id } = req.params;
 	const { name, weight, height, conditions, documents } = req.body;
 	try {

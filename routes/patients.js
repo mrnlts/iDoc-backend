@@ -11,7 +11,7 @@ router.get('/profile', async (req, res) => {
 	}
 });
 
-router.post('/profile', async (req, res, next) => {
+router.put('/profile', async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	const { email, phoneNr } = req.body;
 	try {

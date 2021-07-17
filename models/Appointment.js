@@ -4,11 +4,7 @@ const { Schema } = mongoose;
 
 const appointmentSchema = new Schema(
 	{
-		appointmentDate: {
-			day: Number,
-			month: Number,
-			year: Number,
-		},
+		appointmentDate: Date,
 		patient: {
 			type: Schema.Types.ObjectId,
 			ref: 'User',
