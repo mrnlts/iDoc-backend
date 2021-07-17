@@ -18,6 +18,19 @@ router.get('/whoami', (req, res, next) => {
 	}
 });
 
+router.get('/:id', async (req, res, next) => {
+	const { id } = req.params;
+	try {
+		const user = await User.findById(id);
+		if (user) {
+			return res.json(user);
+		}
+		return next(createError(422));
+	} catch (error) {
+		next(error);
+	}
+});
+
 router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	const {
 		email,
