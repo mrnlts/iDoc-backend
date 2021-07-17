@@ -69,7 +69,7 @@ router.post('/login', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 		if (!user) {
 			return next(createError(404));
 		}
-		if (bcrypt.compareSync(password, user.hashedPassword)) {
+		if (bcrypt.compareSync(password, user.password)) {
 			req.session.currentUser = user;
 			return res.json(user);
 		}
