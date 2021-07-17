@@ -25,4 +25,14 @@ router.put('/profile', async (req, res, next) => {
 	}
 });
 
+router.get('/appointments', async (req, res, next) => {
+	const { _id } = req.session.currentUser;
+	try {
+		const user = await User.findById(_id);
+		return user.appointments;
+	} catch (error) {
+		return next(error);
+	}
+});
+
 module.exports = router;
