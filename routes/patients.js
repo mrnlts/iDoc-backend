@@ -5,24 +5,9 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-router.get('/whoami', (req, res, next) => {
+router.get('/profile', async (req, res) => {
 	if (req.session.currentUser) {
 		res.status(200).json(req.session.currentUser);
-	} else {
-		next(createError(401));
-	}
-});
-
-router.get('/:id', async (req, res, next) => {
-	const { id } = req.params;
-	try {
-		const user = await User.findById(id);
-		if (user) {
-			return res.json(user);
-		}
-		return next(createError(422));
-	} catch (error) {
-		return next(error);
 	}
 });
 

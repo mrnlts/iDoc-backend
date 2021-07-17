@@ -88,21 +88,21 @@ Just a litle API for educational purposes.
 ### Health professionals
 | Method | Path | Description | Body | |
 | ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
-| GET | `/home` | Homepage in professional side of the app | |
-| POST | `/add` | Add new patient to database | `{isProfessional, email, phoneNr, password, name, birthDate, weight, height, conditions, appointments}`
-| GET | `/:id` | Read patient's clinical history | | |
-| POST | `/:id` | Edit patient's clinical history | `{isProfessional, email, password, phoneNr, name, birthDate, weight, height, conditions, appointments}` | |
-| GET | `/daily` | Read daily schedule | | |
+| GET | `/professionals/home` | Homepage in professional side of the app | |
+| POST | `/professionals/add` | Add new patient to database | `{isProfessional, email, phoneNr, password, name, birthDate, weight, height, conditions, appointments}`
+| GET | `/professionals/:id` | Read patient's clinical history | | |
+| POST | `/professionals/:id` | Edit patient's clinical history | `{isProfessional, email, password, phoneNr, name, birthDate, weight, height, conditions, appointments}` | |
+| GET | `/professionals/daily` | Read daily schedule | | |
 |
 
 ### Patients
 | Method | Path | Description | Body | |
 | ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
-| GET | `/home` | Homepage in patient side of the app | |
-| GET | `/profile` | Display personal information 
-| POST | `/profile` | Update contact information | `{email, phoneNr}`| 
-| GET | `/appointments` | Display appointments 
-| POST | `/appointments` | Create new appointments | | 
+| GET | `/patients/home` | Homepage in patient side of the app | |
+| GET | `/patients/profile` | Display personal information 
+| POST | `/patients/profile` | Update contact information | `{email, phoneNr}`| 
+| GET | `/patients/appointments` | Display appointments 
+| POST | `/patients/appointments` | Create new appointments | | 
 |
 
 
