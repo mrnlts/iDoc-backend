@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const createError = require('http-errors');
-const { checkEmailAndPasswordNotEmpty } = require('../middlewares');
+const { checkEmailAndPasswordNotEmpty, checkIsMyPatient } = require('../middlewares');
 
 const User = require('../models/User');
 const Appointment = require('../models/Appointment');
@@ -98,7 +98,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	}
 });
 
-router.get('/patients/:id', async (req, res, next) => {
+router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
@@ -111,7 +111,7 @@ router.get('/patients/:id', async (req, res, next) => {
 	}
 });
 
-router.put('/patients/:id', async (req, res, next) => {
+router.put('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	const { id } = req.params;
 	const { name, weight, height, conditions, documents } = req.body;
 	try {
@@ -125,7 +125,7 @@ router.put('/patients/:id', async (req, res, next) => {
 	}
 });
 
-router.delete('/patients/:id', async (req, res, next) => {
+router.delete('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const deletedUser = await User.findByIdAndDelete(id);
