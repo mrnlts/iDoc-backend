@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const { checkEmailAndPasswordNotEmpty } = require('../middlewares');
 
 const User = require('../models/User');
+const Appointment = require('../models/Appointment');
 
 const bcryptSalt = 10;
 
@@ -18,10 +19,28 @@ router.get('/home', async (req, res) => {
 router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	const { email, password, name, phoneNr, birthDate, weight, height, conditions, documents, appointments } =
 		res.locals.auth;
+	const { _id } = req.session.currentUser;
+
 	try {
 		const user = await User.findOne({ email });
-		if (user) {
-			if (!user.isPatient) {
+		// If user exists (as professional) in DB create default appointment, make isPatient true and add patient props to user profile
+		if (user && !user.isPatient) {
+			const newAppointment = await Appointment.create({
+				appointmentDate: new Date().toISOString(),
+				patient: user.id,
+				professional: _id,
+			});
+			if (newAppointment) {
+				await User.findByIdAndUpdate(user.id, {
+					$push: {
+						appointments: newAppointment,
+					},
+				});
+				await User.findByIdAndUpdate(_id, {
+					$push: {
+						appointments: newAppointment,
+					},
+				});
 				const updatedUser = await User.findOneAndUpdate(
 					{ email },
 					{
@@ -39,7 +58,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 			}
 			return next(createError(422));
 		}
-
+		// If user does not exist create default appointment, hash password and add user to DB
 		const salt = bcrypt.genSaltSync(bcryptSalt);
 		const hashedPassword = bcrypt.hashSync(password, salt);
 		const newUser = await User.create({
@@ -47,6 +66,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 			password: hashedPassword,
 			name,
 			isPatient: true,
+			isProfessional: false,
 			phoneNr,
 			birthDate,
 			weight,
@@ -55,7 +75,23 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 			documents,
 			appointments,
 		});
-		req.session.currentUser = newUser;
+		const newAppointment = await Appointment.create({
+			appointmentDate: new Date().toISOString(),
+			patient: newUser.id,
+			professional: _id,
+		});
+		if (newAppointment) {
+			await User.findByIdAndUpdate(newUser.id, {
+				$push: {
+					appointments: newAppointment,
+				},
+			});
+			await User.findByIdAndUpdate(_id, {
+				$push: {
+					appointments: newAppointment,
+				},
+			});
+		}
 		return res.json(newUser);
 	} catch (error) {
 		return next(error);
