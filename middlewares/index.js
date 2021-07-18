@@ -27,10 +27,10 @@ const checkIsMyPatient = async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	try {
 		const appointment = await Appointment.find({ professional: _id, patient: id });
-		if (appointment.length >= 1) {
+		if (req.session.currentUser && appointment.length >= 1) {
 			next();
 		} else {
-			next(createError(401));
+			res.redirect('/patients/profile');
 		}
 	} catch (error) {
 		next(error);
@@ -41,10 +41,10 @@ const checkIsPatient = async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	try {
 		const user = await User.findById(_id);
-		if (user.isPatient) {
+		if (req.session.currentUser && user.isPatient) {
 			next();
 		} else {
-			next(createError(401));
+			res.redirect('/professionals/home');
 		}
 	} catch (error) {
 		next(error);
@@ -52,11 +52,13 @@ const checkIsPatient = async (req, res, next) => {
 };
 
 const checkIsProfessional = async (req, res, next) => {
-	const { _id } = req.session.currentUser;
 	try {
-		const user = await User.findById(_id);
-		if (user.isProfessional) {
-			next();
+		if (req.session.currentUser) {
+			const { _id } = req.session.currentUser;
+			const user = await User.findById(_id);
+			if (user.isProfessional) {
+				next();
+			}
 		} else {
 			next(createError(401));
 		}

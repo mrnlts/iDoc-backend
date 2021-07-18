@@ -11,7 +11,7 @@ const bcryptSalt = 10;
 const router = express.Router();
 
 router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
-	const { email, password, name, specialty } = res.locals.auth;
+	const { email, password, name, specialty } = req.body;
 	try {
 		const user = await User.findOne({ email });
 		if (user) {
@@ -33,7 +33,7 @@ router.post('/signup', checkEmailAndPasswordNotEmpty, async (req, res, next) => 
 });
 
 router.post('/login', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
-	const { email, password } = res.locals.auth;
+	const { email, password } = req.body;
 	try {
 		const user = await User.findOne({ email });
 		if (!user) {

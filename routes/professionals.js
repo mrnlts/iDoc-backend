@@ -13,6 +13,8 @@ const router = express.Router();
 router.get('/home', checkIsProfessional, async (req, res) => {
 	if (req.session.currentUser) {
 		res.status(200).json(req.session.currentUser);
+	} else {
+		res.status(404);
 	}
 });
 
