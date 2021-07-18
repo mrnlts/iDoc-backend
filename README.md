@@ -90,8 +90,9 @@ Just a litle API for educational purposes.
 | ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
 | GET | `/professionals/home` | Homepage in professional side of the app | |
 | POST | `/professionals/add` | Add new patient to database | `{isProfessional, email, phoneNr, password, name, birthDate, weight, height, conditions, appointments}`
-| GET | `/professionals/:id` | Read patient's clinical history | | |
-| POST | `/professionals/:id` | Edit patient's clinical history | `{isProfessional, email, password, phoneNr, name, birthDate, weight, height, conditions, appointments}` | |
+| GET | `/professionals/patients/:id` | Read patient's clinical history | | |
+| PUT | `/professionals/patients/:id` | Edit patient's clinical history | `{isProfessional, email, password, phoneNr, name, birthDate, weight, height, conditions, appointments}` | |
+| DELETE | `/professionals/patients/:id` | Delete patient from database
 | GET | `/professionals/daily` | Read daily schedule | | |
 |
 
@@ -100,7 +101,7 @@ Just a litle API for educational purposes.
 | ------ | ----------------------------- | ------------------------------------------------ | ------------------------------------- | --------------- |
 | GET | `/patients/home` | Homepage in patient side of the app | |
 | GET | `/patients/profile` | Display personal information 
-| POST | `/patients/profile` | Update contact information | `{email, phoneNr}`| 
+| PUT | `/patients/profile` | Update contact information | `{email, phoneNr}`| 
 | GET | `/patients/appointments` | Display appointments 
 | POST | `/patients/appointments` | Create new appointments | | 
 |
@@ -141,8 +142,7 @@ User model
 	]
 	appointments: [
 		{
-			type: ObjectId,
-		ref: Appointment
+			ObjectId<Appointment>
 		}
 	],
 	{

@@ -125,4 +125,17 @@ router.put('/patients/:id', async (req, res, next) => {
 	}
 });
 
+router.delete('/patients/:id', async (req, res, next) => {
+	const { id } = req.params;
+	try {
+		const deletedUser = await User.findByIdAndDelete(id);
+		if (deletedUser) {
+			return res.status(200);
+		}
+		return res.status(500);
+	} catch (error) {
+		return next(error);
+	}
+});
+
 module.exports = router;
