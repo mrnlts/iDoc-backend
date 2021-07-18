@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const createError = require('http-errors');
-const { checkEmailAndPasswordNotEmpty, checkIsMyPatient } = require('../middlewares');
+const { checkEmailAndPasswordNotEmpty, checkIsMyPatient, checkIsProfessional } = require('../middlewares');
 
 const User = require('../models/User');
 const Appointment = require('../models/Appointment');
@@ -10,13 +10,13 @@ const bcryptSalt = 10;
 
 const router = express.Router();
 
-router.get('/home', async (req, res) => {
+router.get('/home', checkIsProfessional, async (req, res) => {
 	if (req.session.currentUser) {
 		res.status(200).json(req.session.currentUser);
 	}
 });
 
-router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
+router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (req, res, next) => {
 	const { email, password, name, phoneNr, birthDate, weight, height, conditions, documents, appointments } =
 		res.locals.auth;
 	const { _id } = req.session.currentUser;
@@ -98,7 +98,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, async (req, res, next) => {
 	}
 });
 
-router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
+router.get('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
@@ -111,7 +111,7 @@ router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	}
 });
 
-router.put('/patients/:id', checkIsMyPatient, async (req, res, next) => {
+router.put('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
 	const { id } = req.params;
 	const { name, weight, height, conditions, documents } = req.body;
 	try {
@@ -125,7 +125,7 @@ router.put('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	}
 });
 
-router.delete('/patients/:id', checkIsMyPatient, async (req, res, next) => {
+router.delete('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const deletedUser = await User.findByIdAndDelete(id);

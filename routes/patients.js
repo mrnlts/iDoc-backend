@@ -1,18 +1,19 @@
 const express = require('express');
 const createError = require('http-errors');
+const { checkIsPatient } = require('../middlewares');
 
 const User = require('../models/User');
 const Appointment = require('../models/Appointment');
 
 const router = express.Router();
 
-router.get('/profile', async (req, res) => {
+router.get('/profile', checkIsPatient, async (req, res) => {
 	if (req.session.currentUser) {
 		res.status(200).json(req.session.currentUser);
 	}
 });
 
-router.put('/profile', async (req, res, next) => {
+router.put('/profile', checkIsPatient, async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	const { email, phoneNr } = req.body;
 	try {
@@ -26,7 +27,7 @@ router.put('/profile', async (req, res, next) => {
 	}
 });
 
-router.get('/appointments', async (req, res, next) => {
+router.get('/appointments', checkIsPatient, async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	try {
 		const user = await User.findById(_id);
@@ -47,6 +48,7 @@ router.post('/appointments', async (req, res, next) => {
 		});
 		if (newAppointment) {
 			await User.findByIdAndUpdate(_id, {
+				isPatient: true,
 				$push: {
 					appointments: newAppointment,
 				},

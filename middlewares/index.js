@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 
+const User = require('../models/User');
 const Appointment = require('../models/Appointment');
 
 const checkIfLoggedIn = (req, res, next) => {
@@ -36,8 +37,38 @@ const checkIsMyPatient = async (req, res, next) => {
 	}
 };
 
+const checkIsPatient = async (req, res, next) => {
+	const { _id } = req.session.currentUser;
+	try {
+		const user = await User.findById(_id);
+		if (user.isPatient) {
+			next();
+		} else {
+			next(createError(401));
+		}
+	} catch (error) {
+		next(error);
+	}
+};
+
+const checkIsProfessional = async (req, res, next) => {
+	const { _id } = req.session.currentUser;
+	try {
+		const user = await User.findById(_id);
+		if (user.isProfessional) {
+			next();
+		} else {
+			next(createError(401));
+		}
+	} catch (error) {
+		next(error);
+	}
+};
+
 module.exports = {
 	checkIfLoggedIn,
 	checkEmailAndPasswordNotEmpty,
 	checkIsMyPatient,
+	checkIsPatient,
+	checkIsProfessional,
 };
