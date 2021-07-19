@@ -38,13 +38,15 @@ const checkIsMyPatient = async (req, res, next) => {
 };
 
 const checkIsPatient = async (req, res, next) => {
-	const { _id } = req.session.currentUser;
 	try {
-		const user = await User.findById(_id);
-		if (req.session.currentUser && user.isPatient) {
-			next();
-		} else {
-			res.redirect('/professionals/home');
+		if (req.session.currentUser) {
+			const { _id } = req.session.currentUser;
+			const user = await User.findById(_id);
+			if (user.isPatient) {
+				next();
+			} else {
+				res.redirect('/professionals/home');
+			}
 		}
 	} catch (error) {
 		next(error);

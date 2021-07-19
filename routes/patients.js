@@ -8,9 +8,10 @@ const Appointment = require('../models/Appointment');
 const router = express.Router();
 
 router.get('/profile', checkIsPatient, async (req, res) => {
-	if (req.session.currentUser) {
-		res.status(200).json(req.session.currentUser);
-	}
+	const { currentUser } = req.session;
+	const appointments = await Appointment.find({ patient: currentUser }).populate('professional');
+	currentUser.appointments = appointments;
+	res.status(200).json(currentUser);
 });
 
 router.put('/profile', checkIsPatient, async (req, res, next) => {
