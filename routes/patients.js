@@ -29,14 +29,10 @@ router.put('/profile', checkIsPatient, async (req, res, next) => {
 	}
 });
 
-router.get('/appointments', checkIsPatient, async (req, res, next) => {
-	const { _id } = req.session.currentUser;
-	try {
-		const user = await User.findById(_id);
-		return res.json(user.appointments);
-	} catch (error) {
-		return next(error);
-	}
+router.get('/appointments', checkIsPatient, async (req, res) => {
+	const { currentUser } = req.session;
+	const appointments = await Appointment.find({ patient: currentUser }).populate('professional');
+	return res.json(appointments);
 });
 
 router.post('/appointments', async (req, res, next) => {
