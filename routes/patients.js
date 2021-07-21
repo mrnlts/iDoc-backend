@@ -36,8 +36,7 @@ router.get('/appointments', checkIsPatient, async (req, res) => {
 });
 
 router.post('/appointments', async (req, res, next) => {
-	const { appointmentDate, professional } = req.body;
-	const { _id } = req.session.currentUser;
+	const { appointmentDate, professional, _id } = req.body;
 	try {
 		const newAppointment = await Appointment.create({
 			appointmentDate,
