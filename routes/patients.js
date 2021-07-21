@@ -20,6 +20,7 @@ router.put('/profile', checkIsPatient, async (req, res, next) => {
 	try {
 		const updatedUser = await User.findByIdAndUpdate(_id, { email, phoneNr });
 		if (updatedUser) {
+			req.session.currentUser = updatedUser;
 			return res.json(updatedUser);
 		}
 		return next(createError(500));
