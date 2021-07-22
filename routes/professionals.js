@@ -11,8 +11,11 @@ const bcryptSalt = 10;
 const router = express.Router();
 
 router.get('/home', checkIsProfessional, async (req, res) => {
-	if (req.session.currentUser) {
-		res.status(200).json(req.session.currentUser);
+	const { currentUser } = req.session;
+	if (currentUser) {
+		const appointments = await Appointment.find({ professional: req.session.currentUser }).populate('patient');
+		currentUser.appointments = appointments;
+		res.status(200).json(currentUser);
 	} else {
 		res.status(404);
 	}
