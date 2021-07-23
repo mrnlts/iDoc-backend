@@ -22,8 +22,13 @@ router.get('/home', checkIsProfessional, async (req, res) => {
 });
 
 router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (req, res, next) => {
-	const { email, password, name, phoneNr, birthDate, weight, height, conditions, documents, appointments } =
-		res.locals.auth;
+	const { email, password, name } = req.body;
+	let { phoneNr, birthDate, weight, height, conditions } = req.body;
+	phoneNr = Number(phoneNr);
+	birthDate = new Date(birthDate);
+	weight = Number(weight);
+	height = Number(height);
+	conditions = [...conditions];
 	const { _id } = req.session.currentUser;
 
 	try {
@@ -55,8 +60,8 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 						weight,
 						height,
 						conditions,
-						documents,
-						appointments,
+						// documents,
+						// appointments,
 					}
 				);
 				return res.json(updatedUser);
@@ -77,8 +82,8 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 			weight,
 			height,
 			conditions,
-			documents,
-			appointments,
+			// documents,
+			// appointments,
 		});
 		const newAppointment = await Appointment.create({
 			appointmentDate: new Date().toISOString(),
@@ -87,9 +92,9 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 		});
 		if (newAppointment) {
 			await User.findByIdAndUpdate(newUser.id, {
-				$push: {
-					appointments: newAppointment,
-				},
+				// $push: {
+				appointments: newAppointment,
+				// },
 			});
 			await User.findByIdAndUpdate(_id, {
 				$push: {
