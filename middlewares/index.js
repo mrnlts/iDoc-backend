@@ -30,7 +30,7 @@ const checkIsMyPatient = async (req, res, next) => {
 		if (req.session.currentUser && appointment.length >= 1) {
 			next();
 		} else {
-			res.redirect('/patients/profile');
+			next(createError(401));
 		}
 	} catch (error) {
 		next(error);
@@ -44,8 +44,6 @@ const checkIsPatient = async (req, res, next) => {
 			const user = await User.findById(_id);
 			if (user.isPatient) {
 				next();
-			} else {
-				res.redirect('/professionals/home');
 			}
 		}
 	} catch (error) {

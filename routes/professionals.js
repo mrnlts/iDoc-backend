@@ -112,8 +112,10 @@ router.get('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, r
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
+		const usersAppointments = await Appointment.find({ patient: id }).populate('professional');
+
 		if (user) {
-			return res.json(user);
+			return res.json({ user, usersAppointments });
 		}
 		return next(createError(422));
 	} catch (error) {
