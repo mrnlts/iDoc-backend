@@ -30,7 +30,7 @@ const checkIsMyPatient = async (req, res, next) => {
 		if (req.session.currentUser && appointment.length >= 1) {
 			next();
 		} else {
-			next(createError(401));
+			next(createError(403));
 		}
 	} catch (error) {
 		next(error);
@@ -60,7 +60,7 @@ const checkIsProfessional = async (req, res, next) => {
 				next();
 			}
 		} else {
-			next(createError(401));
+			next(createError(403));
 		}
 	} catch (error) {
 		next(error);

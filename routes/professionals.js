@@ -108,7 +108,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 	}
 });
 
-router.get('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
+router.get('/patients/:id', checkIsMyPatient,  async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
