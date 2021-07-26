@@ -140,8 +140,9 @@ router.put('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, r
 router.delete('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
 	const { id } = req.params;
 	try {
+		const deletedAppointments = await Appointment.deleteMany({ patient: id });
 		const deletedUser = await User.findByIdAndDelete(id);
-		if (deletedUser) {
+		if (deletedAppointments && deletedUser) {
 			return res.status(200);
 		}
 		return res.status(500);
