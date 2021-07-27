@@ -35,6 +35,11 @@ router.get('/appointments', checkIsPatient, async (req, res) => {
 	return res.json(appointments);
 });
 
+router.get('/getdocs', checkIsPatient, async (req, res) => {
+	const docs = await User.find({ isProfessional: true });
+	return res.json(docs);
+})
+
 router.post('/appointments', async (req, res, next) => {
 	const { appointmentDate, professional, _id } = req.body;
 	try {
