@@ -85,11 +85,13 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 			// documents,
 			// appointments,
 		});
+	
 		const newAppointment = await Appointment.create({
 			appointmentDate: new Date().toISOString(),
 			patient: newUser.id,
 			professional: _id,
 		});
+	
 		if (newAppointment) {
 			await User.findByIdAndUpdate(newUser.id, {
 				// $push: {
@@ -104,6 +106,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 		}
 		return res.json(newUser);
 	} catch (error) {
+		console.log("error!", error)
 		return next(error);
 	}
 });

@@ -26,7 +26,7 @@ async function logErrorAndExit(error) {
 }
 
 async function run() {
-	const dbPath = process.env.MONGODB_URI;
+	const dbPath = `${process.env.MONGODB_URI}${process.env.DB_NAME}`;
 	try {
 		await mongoose.connect(dbPath, {
 			useCreateIndex: true,
