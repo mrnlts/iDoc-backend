@@ -49,7 +49,7 @@ router.post('/appointments', async (req, res, next) => {
 			professional,
 		});
 		if (newAppointment) {
-			await User.findByIdAndUpdate(
+			const updatedPatient = await User.findByIdAndUpdate(
 				_id,
 				{
 					isPatient: true,
@@ -72,6 +72,7 @@ router.post('/appointments', async (req, res, next) => {
 					new: true,
 				}
 			);
+			req.session.currentUser = updatedPatient;
 			return res.json(newAppointment);
 		}
 		return next(createError(500));

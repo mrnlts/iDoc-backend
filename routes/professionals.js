@@ -56,7 +56,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 						new: true,
 					}
 				);
-				await User.findByIdAndUpdate(
+				const updatedProfessional = await User.findByIdAndUpdate(
 					_id,
 					{
 						$push: {
@@ -67,6 +67,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 						new: true,
 					}
 				);
+				req.session.currentUser = updatedProfessional;
 				return res.json(updatedUser);
 			}
 			return next(createError(422));
@@ -99,15 +100,13 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 			await User.findByIdAndUpdate(
 				newUser.id,
 				{
-					// $push: {
 					appointments: newAppointment,
-					// },
 				},
 				{
 					new: true,
 				}
 			);
-			await User.findByIdAndUpdate(
+			const updatedProfessional = await User.findByIdAndUpdate(
 				_id,
 				{
 					$push: {
@@ -118,6 +117,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 					new: true,
 				}
 			);
+			req.session.currentUser = updatedProfessional;
 		}
 		return res.json(newUser);
 	} catch (error) {
@@ -126,7 +126,7 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 	}
 });
 
-router.get('/patients/:id', checkIsMyPatient,  async (req, res, next) => {
+router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	const { id } = req.params;
 	try {
 		const user = await User.findById(id);
