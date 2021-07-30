@@ -39,9 +39,15 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 				professional: _id,
 			});
 			if (newAppointment) {
-				await User.findByIdAndUpdate(
+				const updatedUser = await User.findByIdAndUpdate(
 					user.id,
 					{
+						isPatient: true,
+						phoneNr,
+						birthDate,
+						weight,
+						height,
+						conditions,
 						$push: {
 							appointments: newAppointment,
 						},
@@ -56,22 +62,6 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 						$push: {
 							appointments: newAppointment,
 						},
-					},
-					{
-						new: true,
-					}
-				);
-				const updatedUser = await User.findOneAndUpdate(
-					{ email },
-					{
-						isPatient: true,
-						phoneNr,
-						birthDate,
-						weight,
-						height,
-						conditions,
-						// documents,
-						// appointments,
 					},
 					{
 						new: true,
