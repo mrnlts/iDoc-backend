@@ -10,12 +10,10 @@ const bcryptSalt = 10;
 
 const router = express.Router();
 
-router.get('/home', checkIsProfessional, async (req, res) => {
-	const { currentUser } = req.session;
-	if (currentUser) {
-		const appointments = await Appointment.find({ professional: req.session.currentUser }).populate('patient');
-		currentUser.appointments = appointments;
-		res.status(200).json(currentUser);
+router.get('/appointments', checkIsProfessional, async (req, res) => {
+	const appointments = await Appointment.find({ professional: req.session.currentUser }).populate('patient');
+	if (appointments) {
+		res.status(200).json(appointments);
 	} else {
 		res.status(404);
 	}
