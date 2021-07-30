@@ -41,16 +41,28 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 				professional: _id,
 			});
 			if (newAppointment) {
-				await User.findByIdAndUpdate(user.id, {
-					$push: {
-						appointments: newAppointment,
+				await User.findByIdAndUpdate(
+					user.id,
+					{
+						$push: {
+							appointments: newAppointment,
+						},
 					},
-				});
-				await User.findByIdAndUpdate(_id, {
-					$push: {
-						appointments: newAppointment,
+					{
+						new: true,
+					}
+				);
+				await User.findByIdAndUpdate(
+					_id,
+					{
+						$push: {
+							appointments: newAppointment,
+						},
 					},
-				});
+					{
+						new: true,
+					}
+				);
 				const updatedUser = await User.findOneAndUpdate(
 					{ email },
 					{
@@ -62,6 +74,9 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 						conditions,
 						// documents,
 						// appointments,
+					},
+					{
+						new: true,
 					}
 				);
 				return res.json(updatedUser);
@@ -85,24 +100,36 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 			// documents,
 			// appointments,
 		});
-	
+
 		const newAppointment = await Appointment.create({
 			appointmentDate: new Date().toISOString(),
 			patient: newUser.id,
 			professional: _id,
 		});
-	
+
 		if (newAppointment) {
-			await User.findByIdAndUpdate(newUser.id, {
-				// $push: {
-				appointments: newAppointment,
-				// },
-			});
-			await User.findByIdAndUpdate(_id, {
-				$push: {
+			await User.findByIdAndUpdate(
+				newUser.id,
+				{
+					// $push: {
 					appointments: newAppointment,
+					// },
 				},
-			});
+				{
+					new: true,
+				}
+			);
+			await User.findByIdAndUpdate(
+				_id,
+				{
+					$push: {
+						appointments: newAppointment,
+					},
+				},
+				{
+					new: true,
+				}
+			);
 		}
 		return res.json(newUser);
 	} catch (error) {
@@ -130,7 +157,19 @@ router.put('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, r
 	const { id } = req.params;
 	const { name, weight, height, conditions, documents } = req.body;
 	try {
-		const updatedUser = await User.findByIdAndUpdate(id, { name, weight, height, conditions, documents });
+		const updatedUser = await User.findByIdAndUpdate(
+			id,
+			{
+				name,
+				weight,
+				height,
+				conditions,
+				documents,
+			},
+			{
+				new: true,
+			}
+		);
 		if (updatedUser) {
 			return res.json(updatedUser);
 		}

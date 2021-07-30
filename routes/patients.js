@@ -18,7 +18,7 @@ router.put('/profile', checkIsPatient, async (req, res, next) => {
 	const { _id } = req.session.currentUser;
 	const { email, phoneNr } = req.body;
 	try {
-		const updatedUser = await User.findByIdAndUpdate(_id, { email, phoneNr });
+		const updatedUser = await User.findByIdAndUpdate(_id, { email, phoneNr }, { new: true });
 		if (updatedUser) {
 			req.session.currentUser = updatedUser;
 			return res.json(updatedUser);
@@ -49,17 +49,29 @@ router.post('/appointments', async (req, res, next) => {
 			professional,
 		});
 		if (newAppointment) {
-			await User.findByIdAndUpdate(_id, {
-				isPatient: true,
-				$push: {
-					appointments: newAppointment,
+			await User.findByIdAndUpdate(
+				_id,
+				{
+					isPatient: true,
+					$push: {
+						appointments: newAppointment,
+					},
 				},
-			});
-			await User.findByIdAndUpdate(professional, {
-				$push: {
-					appointments: newAppointment,
+				{
+					new: true,
+				}
+			);
+			await User.findByIdAndUpdate(
+				professional,
+				{
+					$push: {
+						appointments: newAppointment,
+					},
 				},
-			});
+				{
+					new: true,
+				}
+			);
 			return res.json(newAppointment);
 		}
 		return next(createError(500));
