@@ -27,6 +27,7 @@ async function setupApp() {
 	app.use(express.urlencoded({ extended: false }));
 	app.use(cookieParser());
 	app.use(express.static(path.join(__dirname, 'public')));
+	app.set('trust proxy', 1);
 	app.use(
 		session({
 			store: MongoStore.create({
@@ -39,6 +40,7 @@ async function setupApp() {
 			cookie: {
 				maxAge: 24 * 60 * 60 * 1000,
 				sameSite: 'none',
+				secure: true,
 			},
 		})
 	);
