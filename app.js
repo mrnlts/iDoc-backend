@@ -37,7 +37,7 @@ async function setupApp() {
 			saveUninitialized: true,
 			cookie: {
 				maxAge: 24 * 60 * 60 * 1000,
-				ameSite: process.env.COOKIES_SAMESITE === 'true' ? 'lax' : 'none',
+				sameSite: process.env.COOKIES_SAMESITE === 'true' ? 'lax' : 'none',
 				secure: process.env.COOKIES_SAMESITE !== 'true',
 			},
 		})
