@@ -12,8 +12,10 @@ const router = express.Router();
 
 router.get('/whoami', (req, res, next) => {
 	if (req.session.currentUser) {
+		console.log("current session, ", req.session);
 		res.status(200).json(req.session.currentUser);
 	} else {
+		console.log("current session, ", req.session);
 		next(createError(401));
 	}
 });

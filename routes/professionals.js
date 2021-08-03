@@ -126,6 +126,17 @@ router.post('/add', checkEmailAndPasswordNotEmpty, checkIsProfessional, async (r
 	}
 });
 
+router.get('/getpatients', checkIsProfessional, async (req, res) => {
+	const patientArr = [];
+	try {
+		const appointments = await Appointment.find({ professional: req.session.currentUser }).populate('patient');
+		appointments.map(appointment => patientArr.push({ id: appointment.patient.id, name: appointment.patient.name }));
+		return res.json(patientArr);
+	} catch (e) {
+		console.log(e);
+	}
+})
+
 router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	const { id } = req.params;
 	try {
