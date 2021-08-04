@@ -130,7 +130,12 @@ router.get('/getpatients', checkIsProfessional, async (req, res) => {
 	const patientArr = [];
 	try {
 		const appointments = await Appointment.find({ professional: req.session.currentUser }).populate('patient');
-		appointments.map(appointment => patientArr.push({ id: appointment.patient.id, name: appointment.patient.name }));
+		appointments.map(appointment => {
+			if (patientArr.find(patient => patient.id === appointment.patient.id) === undefined) {
+				return patientArr.push({ id: appointment.patient.id, name: appointment.patient.name });
+			}
+			return null;
+		});
 		return res.json(patientArr);
 	} catch (e) {
 		console.log(e);
