@@ -2,9 +2,10 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const createError = require('http-errors');
 const { checkEmailAndPasswordNotEmpty, checkIsMyPatient, checkIsProfessional } = require('../middlewares');
-
+const uploadCloud = require('../configs/cloudinary.config');
 const User = require('../models/User');
 const Appointment = require('../models/Appointment');
+const Document = require('../models/Document');
 
 const bcryptSalt = 10;
 
@@ -157,30 +158,36 @@ router.get('/patients/:id', checkIsMyPatient, async (req, res, next) => {
 	}
 });
 
-router.put('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
-	const { id } = req.params;
-	const { name, weight, height, conditions, documents } = req.body;
-	try {
-		const updatedUser = await User.findByIdAndUpdate(
-			id,
-			{
-				name,
-				weight,
-				height,
-				conditions,
-				documents,
-			},
-			{
-				new: true,
+router.put(
+	'/patients/:id',
+	checkIsMyPatient,
+	checkIsProfessional,
+	uploadCloud.single('document'),
+	async (req, res, next) => {
+		const { id } = req.params;
+		const { name, weight, height, conditions, title, description, documentUrl } = req.body;
+		try {
+			const newDocument = await Document.create({ title, description, documentUrl, patient: id });
+			console.log(newDocument);
+			const updatedUser = await User.findByIdAndUpdate(
+				id,
+				{
+					name,
+					weight,
+					height,
+					conditions,
+				},
+				{
+					new: true,
+				}
+			);
+			if (updatedUser) {
+				return res.json(updatedUser);
 			}
-		);
-		if (updatedUser) {
-			return res.json(updatedUser);
+			return next(createError(500));
+		} catch (error) {
+			return next(error);
 		}
-		return next(createError(500));
-	} catch (error) {
-		return next(error);
-	}
 });
 
 router.delete('/patients/:id', checkIsMyPatient, checkIsProfessional, async (req, res, next) => {
