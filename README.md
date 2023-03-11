@@ -174,7 +174,7 @@ Link to Trello
 
 [Repository Link](https://github.com/mrnlts/iDoc-backend)
 
-[Deploy Link](http://heroku.com/)
+[Deploy Link](https://idoc-backend.fly.dev/)
 
 ### Slides
 
